@@ -1,0 +1,145 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Caddyfile",
+  "scopeName": "source.caddyfile",
+  "patterns": [
+    { "include": "#comment" },
+    { "include": "#snippet" },
+    { "include": "#block-open" },
+    { "include": "#directive" },
+    { "include": "#matcher" },
+    { "include": "#placeholder" },
+    { "include": "#string" },
+    { "include": "#operator" }
+  ],
+  "repository": {
+    "comment": {
+      "name": "comment.line.number-sign.caddyfile",
+      "match": "#.*$"
+    },
+    "snippet": {
+      "name": "meta.snippet.caddyfile",
+      "match": "^\\s*\\(\\s*([a-zA-Z_][a-zA-Z0-9_-]*)?",
+      "captures": {
+        "1": { "name": "entity.name.function.snippet.caddyfile" }
+      }
+    },
+    "block-open": {
+      "name": "meta.block.caddyfile",
+      "begin": "\\{",
+      "beginCaptures": {
+        "0": { "name": "punctuation.section.block.begin.caddyfile" }
+      },
+      "end": "\\}",
+      "endCaptures": {
+        "0": { "name": "punctuation.section.block.end.caddyfile" }
+      },
+      "patterns": [
+        { "include": "#comment" },
+        { "include": "#directive" },
+        { "include": "#matcher" },
+        { "include": "#placeholder" },
+        { "include": "#string" },
+        { "include": "#block-open" },
+        { "include": "#operator" }
+      ]
+    },
+    "directive": {
+      "patterns": [
+        {
+          "name": "support.function.directive.builtin.caddyfile",
+          "match": "^\\s+([a-z][a-z0-9_]*(?:_[a-z0-9_]+)+)"
+        },
+        {
+          "name": "support.function.directive.builtin.caddyfile",
+          "match": "^\\s+([a-z][a-z0-9_]*)"
+        }
+      ]
+    },
+    "matcher": {
+      "name": "entity.name.variable.matcher.caddyfile",
+      "match": "(@)([a-zA-Z_][a-zA-Z0-9_-]*)",
+      "captures": {
+        "1": { "name": "punctuation.definition.variable.caddyfile" },
+        "2": { "name": "entity.name.variable.matcher.caddyfile" }
+      }
+    },
+    "placeholder": {
+      "patterns": [
+        {
+          "name": "meta.placeholder.caddyfile",
+          "begin": "\\{\\$[a-zA-Z_][a-zA-Z0-9_]*",
+          "beginCaptures": {
+            "0": { "name": "punctuation.definition.placeholder.begin.caddyfile" }
+          },
+          "end": "\\}",
+          "endCaptures": {
+            "0": { "name": "punctuation.definition.placeholder.end.caddyfile" }
+          },
+          "contentName": "variable.other.env.caddyfile"
+        },
+        {
+          "name": "meta.placeholder.caddyfile",
+          "begin": "\\{",
+          "beginCaptures": {
+            "0": { "name": "punctuation.definition.placeholder.begin.caddyfile" }
+          },
+          "end": "\\}",
+          "endCaptures": {
+            "0": { "name": "punctuation.definition.placeholder.end.caddyfile" }
+          },
+          "contentName": "variable.other.readwrite.caddyfile"
+        }
+      ]
+    },
+    "string": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.caddyfile",
+          "begin": "\"",
+          "beginCaptures": {
+            "0": { "name": "punctuation.definition.string.begin.caddyfile" }
+          },
+          "end": "\"",
+          "endCaptures": {
+            "0": { "name": "punctuation.definition.string.end.caddyfile" }
+          },
+          "patterns": [
+            { "name": "constant.character.escape.caddyfile", "match": "\\\\." }
+          ]
+        },
+        {
+          "name": "string.quoted.other.backtick.caddyfile",
+          "begin": "`",
+          "beginCaptures": {
+            "0": { "name": "punctuation.definition.string.begin.caddyfile" }
+          },
+          "end": "`",
+          "endCaptures": {
+            "0": { "name": "punctuation.definition.string.end.caddyfile" }
+          }
+        }
+      ]
+    },
+    "operator": {
+      "patterns": [
+        {
+          "name": "keyword.operator.word.caddyfile",
+          "match": "\\b(not|match|path|path_regexp|method|host|header|remote_ip|query|expression|protocol|client_ip|uri|file|vars|vars_regexp|basicauth)\\b"
+        },
+        {
+          "name": "keyword.operator.arrow.caddyfile",
+          "match": "=>|->|!=|<=|>="
+        },
+        {
+          "name": "keyword.operator.negation.caddyfile",
+          "match": "\\b!\\s*[a-zA-Z_][a-zA-Z0-9_.-]*"
+        },
+        {
+          "name": "constant.numeric.port.caddyfile",
+          "match": "(?<=[:\\s])([0-9]{2,5})(?=[\\s,}]|$)"
+        }
+      ]
+    }
+  }
+}

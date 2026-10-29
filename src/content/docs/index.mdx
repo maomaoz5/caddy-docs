@@ -1,0 +1,90 @@
+---
+title: 什么是 Caddy
+description: Caddy 是一个用 Go 写的现代 Web 服务器，默认自动处理 HTTPS。
+template: splash
+hero:
+  tagline: 用一份短得不像配置的 Caddyfile，拿到反向代理、自动 HTTPS 和 HTTP/3。
+  actions:
+    - text: 快速开始
+      link: /getting-started/installation/
+      icon: right-arrow
+    - text: 看配置示例
+      link: /guides/reverse-proxy/
+      variant: minimal
+---
+
+import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+<CardGrid>
+  <Card title="自动 HTTPS" icon="padlock">
+    证书签发、续期、HTTP/2、HTTP/3 全部自动。不需要 certbot，不需要定时任务。
+  </Card>
+  <Card title="一行反代" icon="rocket">
+    `reverse_proxy localhost:9000` 就够了。SNI 路由、负载均衡、WebSocket 都是内置的。
+  </Card>
+  <Card title="单个二进制" icon="setting">
+    静态编译的 Go 程序，零运行时依赖。下载、解压、运行，三步结束。
+  </Card>
+</CardGrid>
+
+## 先看配置长什么样
+
+这是最常见的生产配置，一个反向代理加自动 HTTPS：
+
+```caddy
+api.example.com {
+    encode gzip zstd
+    reverse_proxy localhost:8080
+}
+```
+
+对比一下 Nginx 做同样的事：要写 server 块、location 块，再额外跑一个 certbot 加 cron 续期。这套配置的价值就在这个差值里。
+
+想看完整的演进过程，从 [第一个 Caddyfile](/getting-started/first-caddyfile/) 开始。
+
+## 它适合什么
+
+Caddy 不是 Nginx 的换皮，它的目标是**用最少的配置表达最多的意图**。
+
+- **个人站 / 博客** —— 静态文件丢进目录，`file_server` 就完事，HTTPS 自动带上。
+- **API 网关** —— 几个后端按域名分流，几十行 Caddyfile 搞定。
+- **内网工具** —— 给 NAS、Jupyter、Home Assistant 套一层带证书的 HTTPS。
+- **需要 WebSocket / gRPC / HTTP/3** —— 都是默认能力，不用单独编译。
+
+## 和 Nginx 的区别
+
+| | Caddy | Nginx |
+| --- | --- | --- |
+| HTTPS 证书 | 自动签发与续期 | 需 certbot + cron |
+| 配置文件 | Caddyfile（易读 DSL） | nginx.conf（指令式，易错） |
+| 改完配置生效 | `caddy reload`，几乎无感 | 通常要 reload |
+| 依赖 | 单个静态二进制 | 动态库 + 脚本生态 |
+| HTTP/3 | 默认开启 | 需编译时开启 |
+
+<CardGrid>
+  <LinkCard
+    title="快速开始"
+    description="四种平台的安装命令"
+    href="/getting-started/installation/"
+  />
+  <LinkCard
+    title="指令速查"
+    description="一页看完常用指令"
+    href="/concepts/directives/"
+  />
+  <LinkCard
+    title="反向代理实战"
+    description="负载均衡、健康检查、超时"
+    href="/guides/reverse-proxy/"
+  />
+  <LinkCard
+    title="常见坑"
+    description="文档没写但一定会撞上的"
+    href="/advanced/pitfalls/"
+  />
+</CardGrid>
+
+:::tip[关于这份文档]
+内容基于 Caddy 官方文档整理重写，侧重「实际会怎么写」，而不是逐条罗列参数。
+遇到诡异问题，先看[常见坑](/advanced/pitfalls/)那一页，八成已经有答案了。
+:::

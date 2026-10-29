@@ -1,0 +1,159 @@
+---
+import Pagination from 'virtual:starlight/components/Pagination';
+import EditLink from 'virtual:starlight/components/EditLink';
+import LastUpdated from 'virtual:starlight/components/LastUpdated';
+import type { Props } from '@astrojs/starlight/props';
+
+const { entry } = Astro.props as Props;
+const sidebar = entry?.data?.sidebar as
+  | Array<{ label: string; items: Array<{ slug?: string; label: string }> }>
+  | undefined;
+
+const groups = sidebar ?? [];
+const totalPages = groups.reduce((sum, g) => sum + g.items.filter((i) => i.slug).length, 0);
+---
+
+<!-- 先渲染官方分页，保证上一篇/下一篇导航存在 -->
+<Pagination />
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__brand">
+      <span class="site-footer__logo" aria-hidden="true"></span>
+      <p>
+        一个更清爽的 Caddy 文档。<br />
+        官方文档也很棒，只是配色比较… 复古。
+      </p>
+    </div>
+
+    <nav class="site-footer__links" aria-label="页脚导航">
+      {
+        groups.map((g) => (
+          <div class="site-footer__col">
+            <p class="site-footer__title">{g.label}</p>
+            <ul>
+              {g.items.map((i) => (
+                <li>
+                  <a href={`/${i.slug}/`}>{i.label}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </nav>
+  </div>
+
+  <div class="site-footer__bottom">
+    <div class="site-footer__meta">
+      <EditLink />
+      <LastUpdated />
+    </div>
+    <p>共 {totalPages} 篇文档 · 内容基于 Caddy 官方文档整理</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: 3rem;
+    border-top: 1px solid var(--sl-color-hairline);
+    background: color-mix(in srgb, var(--sl-color-gray-6) 55%, transparent);
+    border-radius: 0 0 0.9rem 0.9rem;
+    overflow: hidden;
+  }
+
+  .site-footer__inner {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2.5rem;
+    padding: 2.5rem 1.5rem 1.5rem;
+  }
+
+  .site-footer__brand {
+    flex: 1 1 15rem;
+    color: var(--sl-color-gray-3);
+    font-size: 0.85rem;
+    line-height: 1.7;
+  }
+
+  .site-footer__brand p {
+    margin: 0.6rem 0 0;
+  }
+
+  .site-footer__logo {
+    display: block;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #4a8cff 0%, #22d3a7 100%);
+  }
+
+  .site-footer__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem 3rem;
+    flex: 3 1 30rem;
+  }
+
+  .site-footer__col ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .site-footer__title {
+    margin: 0 0 0.6rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--sl-color-gray-4);
+  }
+
+  .site-footer__col a {
+    color: var(--sl-color-gray-2);
+    font-size: 0.85rem;
+    text-decoration: none;
+  }
+
+  .site-footer__col a:hover {
+    color: var(--sl-color-accent-high);
+  }
+
+  .site-footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1.5rem;
+    padding: 1rem 1.5rem 1.4rem;
+    border-top: 1px solid var(--sl-color-hairline);
+    color: var(--sl-color-gray-4);
+    font-size: 0.8rem;
+  }
+
+  .site-footer__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 2rem;
+    align-items: center;
+  }
+
+  .site-footer__meta :global(p) {
+    margin: 0;
+  }
+
+  .site-footer__meta :global(a) {
+    color: var(--sl-color-gray-3);
+  }
+
+  .site-footer__meta :global(a:hover) {
+    color: var(--sl-color-accent-high);
+  }
+
+  .site-footer__bottom p {
+    margin: 0;
+  }
+</style>

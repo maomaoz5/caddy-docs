@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /pagefind/
+
+Sitemap: https://caddy.zidayo.com/sitemap-index.xml
