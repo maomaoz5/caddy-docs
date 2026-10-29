@@ -2,15 +2,30 @@
 import Pagination from 'virtual:starlight/components/Pagination';
 import EditLink from 'virtual:starlight/components/EditLink';
 import LastUpdated from 'virtual:starlight/components/LastUpdated';
-import type { Props } from '@astrojs/starlight/props';
+import config from 'virtual:starlight/user-config';
 
-const { entry } = Astro.props as Props;
-const sidebar = entry?.data?.sidebar as
-  | Array<{ label: string; items: Array<{ slug?: string; label: string }> }>
-  | undefined;
+// 侧边栏来自全局配置，不是 entry.data.sidebar
+// （后者是 frontmatter 的 sidebar 覆盖字段，绝大多数页面为空）
+type NavItem = { label: string; slug?: string };
+type NavGroup = { label: string; items: NavItem[] };
 
-const groups = sidebar ?? [];
-const totalPages = groups.reduce((sum, g) => sum + g.items.filter((i) => i.slug).length, 0);
+const rawSidebar = (config as unknown as { sidebar?: unknown[] }).sidebar ?? [];
+const groups = rawSidebar.filter(
+  (g): g is NavGroup =>
+    typeof g === 'object' &&
+    g !== null &&
+    'items' in g &&
+    Array.isArray((g as NavGroup).items) &&
+    Array.isArray((g as NavGroup).items)
+);
+
+const totalPages = groups.reduce(
+  (sum, g) => sum + g.items.filter((i) => i.slug).length,
+  0
+);
+
+// 首页的 slug 是 'index'，对应 /index.html 而不是 /index/（后者会 404）
+const hrefOf = (slug?: string) => (!slug || slug === 'index' ? '/' : `/${slug}/`);
 ---
 
 <!-- 先渲染官方分页，保证上一篇/下一篇导航存在 -->
@@ -34,7 +49,7 @@ const totalPages = groups.reduce((sum, g) => sum + g.items.filter((i) => i.slug)
             <ul>
               {g.items.map((i) => (
                 <li>
-                  <a href={`/${i.slug}/`}>{i.label}</a>
+                  <a href={hrefOf(i.slug)}>{i.label}</a>
                 </li>
               ))}
             </ul>
