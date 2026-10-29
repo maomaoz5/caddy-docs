@@ -43,12 +43,10 @@ export default defineConfig({
           href: 'https://github.com/caddyserver/caddy',
         },
       ],
-      // 编辑链接暂时关闭：此前指向 caddyserver/caddy 官方仓库，
-      // 而本站内容是原创重写，点进去必然 404。
-      // 建好内容仓库后取消注释并改成自己的仓库地址。
-      // editLink: {
-      //   baseUrl: 'https://github.com/<你的用户名>/caddy-docs/edit/main/',
-      // },
+      // 编辑链接指向本站自己的内容仓库（不是 Caddy 官方仓库）
+      editLink: {
+        baseUrl: 'https://github.com/maomaoz5/caddy-docs/edit/main/',
+      },
       lastUpdated: true,
       pagination: true,
       credits: false,
