@@ -203,70 +203,55 @@ headless 截图就够了：
 
 ## 部署
 
-### 线上环境
+本站是纯静态产物，`npm run build` 之后 `dist/` 可以直接放到任意静态托管。
 
-| 项 | 值 |
-| --- | --- |
-| 地址 | **https://caddy.zidayo.com/** |
-| 服务器 | `root@139.196.225.5`（AlmaLinux 10.2 + 1Panel / OpenResty） |
-| 站点目录 | `/opt/1panel/1panel/www/sites/caddy.zidayo.com/index` |
-| SSH 密钥 | `D:/WindTerm/WindTerm_2.7.0/ssh-key/fun.pem` |
-
-一键部署：
-
-```bash
-bash deploy.sh
-```
-
-脚本会依次做：构建 → 打包 → 上传 → 服务器端备份旧版本 → 解压 → 修权限 → 验证。
-备份自动保留最近 5 个，存放在服务器 `/opt/backup/`。
+线上地址：**https://caddy.zidayo.com/**
 
 ### 注意事项
 
 **改域名一定要同步改 `site`。** `astro.config.mjs` 里的 `site` 决定 canonical、
 OG 标签和 sitemap.xml 的域名，写错了 SEO 会指向别处。
 
-**站点目录有两套，别搞混：**
+**静态资源需要在服务器侧配缓存。** 构建产物的 `/_astro/*` 文件名带内容哈希，
+适合长期缓存；HTML 则要保持可重新验证：
 
-```
-/opt/1panel/1panel/www/sites/   ← 真正生效的（1Panel 在用）
-/www/sites/                     ← 旧布局，只有 zidayo.com
+```nginx
+location ~* ^/_astro/ {
+    expires 1y;
+    access_log off;
+}
 ```
 
-**属主必须设为 `1000:1000`（即 `1panel:1panel`）。** 传成 `root:root` 的话，
-1Panel 面板会对 `index` 及所有子目录/文件报「所有者和用户组需要设置为 1000」的警告。
-`deploy.sh` 已经处理好了，手动部署时别漏掉这一句：
+**压缩类型别漏了 JSON。** `gzip_types` 记得包含 `application/json`，
+否则 Pagefind 搜索索引不会被压缩。另外 `.pf_fragment` / `.pf_index` 这类扩展名
+默认会被识别成 `application/octet-stream`，需要单独指定：
+
+```nginx
+location ~* \.(pf_fragment|pf_index|pf_meta)$ {
+    default_type application/json;
+}
+```
+
+**用面板管理站点时注意属主。** 部分面板（例如 1Panel）要求站点文件属主为
+`1000:1000`，否则会在面板上报警告。权限目录 `755`、文件 `644` 即可。
+
+**站点目录可能有两套布局。** 面板的「配置文件」里写的路径，和面板 UI 显示的实际
+站点目录不一定是同一个——以 UI 为准，改之前先 `ls` 确认。
+
+### 部署脚本
+
+`deploy.sh` **不纳入本仓库**——它包含具体的服务器地址与密钥路径，只保留在本地。
+
+部署本质上是三步，自己写也很容易：
 
 ```bash
-chown -R 1000:1000 /opt/1panel/1panel/www/sites/caddy.zidayo.com/index
-```
-
-权限用目录 `755`、文件 `644` 即可。
-
-**这台机器不需要装 Caddy。** 80/443 由 1Panel 的 OpenResty 占用，
-站点已配好 SSL 证书、HTTP/2 和 HSTS，直接把静态文件放进站点目录即可。
-
-### 手动部署（不用脚本时）
-
-```bash
-# 1. 构建
 npx astro build
-
-# 2. 打包上传
 tar czf /tmp/dist.tgz -C dist .
-scp -i "$KEY" /tmp/dist.tgz root@139.196.225.5:/tmp/dist.tgz
-
-# 3. 服务器端解压
-ssh -i "$KEY" root@139.196.225.5 '
-  S=/opt/1panel/1panel/www/sites/caddy.zidayo.com/index
-  tar czf /opt/backup/caddy-$(date +%Y%m%d-%H%M%S).tgz -C "$S" .
-  tar xzf /tmp/dist.tgz -C "$S"
-  find "$S" -type d -exec chmod 755 {} \;
-  find "$S" -type f -exec chmod 644 {} \;
-  chown -R 1000:1000 "$S"
-  rm -f /tmp/dist.tgz
-'
+scp /tmp/dist.tgz <你的服务器>:/tmp/dist.tgz
+ssh <你的服务器> 'tar xzf /tmp/dist.tgz -C <站点目录>'
 ```
+
+建议在覆盖前先备份：`tar czf /path/backup-$(date +%F).tgz -C <站点目录> .`
 
 ### 纯静态托管的替代方案
 
