@@ -13,8 +13,18 @@
 :root {
   --caddy-blue: #4a8cff;
   --caddy-green: #22d3a7;
-  --caddy-gradient: linear-gradient(135deg, #4a8cff 0%, #22d3a7 100%);
-  --caddy-radius: 0.85rem;
+  --caddy-gradient: linear-gradient(135deg, var(--caddy-blue) 0%, var(--caddy-green) 100%);
+
+  --caddy-radius-xs: 0.375rem;
+  --caddy-radius-sm: 0.55rem;
+  --caddy-radius-md: 0.85rem;
+  --caddy-radius-pill: 999px;
+  --caddy-shadow-rest: 0 1px 2px rgba(0,0,0,0.30);
+  --caddy-shadow-hover: 0 14px 30px -18px color-mix(in srgb, var(--caddy-blue) 55%, transparent);
+  --caddy-shadow-lift: 0 32px 64px -30px rgba(0,0,0,0.65), 0 24px 56px -36px color-mix(in srgb, var(--caddy-blue) 50%, transparent);
+  --caddy-border: color-mix(in srgb, var(--sl-color-white) 11%, transparent);
+  --caddy-border-subtle: color-mix(in srgb, var(--sl-color-white) 8%, transparent);
+  --caddy-border-accent: color-mix(in srgb, var(--caddy-blue) 30%, transparent);
 }
 
 /* ---------------- 深色主题（默认） ---------------- */
@@ -56,6 +66,12 @@
   --sl-color-accent-low: hsl(221, 92%, 93%);
   --sl-color-accent: hsl(221, 85%, 52%);
   --sl-color-accent-high: hsl(221, 78%, 30%);
+
+  --caddy-blue: hsl(221, 85%, 52%);
+  --caddy-green: hsl(160, 70%, 42%);
+
+  --caddy-shadow-rest: 0 1px 2px rgba(15, 23, 42, 0.08);
+  --caddy-shadow-hover: 0 14px 30px -18px rgba(74, 140, 255, 0.30);
 }
 
 /* ============================================================
@@ -70,8 +86,8 @@
      留白过大到显得空洞。收紧一档。 */
   padding-block: clamp(2.75rem, 6vh, 4.75rem);
   background:
-    radial-gradient(760px 340px at 12% -20%, rgba(74, 140, 255, 0.22), transparent 65%),
-    radial-gradient(700px 320px at 88% -30%, rgba(34, 211, 167, 0.18), transparent 65%);
+    radial-gradient(760px 340px at 12% -20%, color-mix(in srgb, var(--caddy-blue) 22%, transparent), transparent 65%),
+    radial-gradient(700px 320px at 88% -30%, color-mix(in srgb, var(--caddy-green) 18%, transparent), transparent 65%);
   overflow: hidden;
 }
 
@@ -184,14 +200,13 @@
   position: relative;
   width: 100%;
   border: 1px solid color-mix(in srgb, var(--sl-color-white) 12%, transparent);
-  border-radius: 14px;
+  border-radius: var(--caddy-radius-md);
   background: linear-gradient(180deg,
     color-mix(in srgb, var(--sl-color-black) 92%, var(--caddy-blue)) 0%,
     var(--sl-color-black) 42%);
   box-shadow:
-    0 40px 80px -32px rgba(0, 0, 0, 0.72),
-    0 0 0 1px color-mix(in srgb, var(--sl-color-white) 4%, transparent) inset,
-    0 32px 72px -40px color-mix(in srgb, var(--caddy-blue) 60%, transparent);
+    var(--caddy-shadow-lift),
+    0 0 0 1px var(--caddy-border-subtle) inset;
   overflow: hidden;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 0.845rem;
@@ -205,7 +220,7 @@
   gap: 0.65rem;
   padding: 0.72rem 1rem;
   background: color-mix(in srgb, var(--sl-color-gray-7) 72%, transparent);
-  border-bottom: 1px solid color-mix(in srgb, var(--sl-color-white) 8%, transparent);
+  border-bottom: 1px solid var(--caddy-border-subtle);
 }
 
 .cw-dots {
@@ -305,7 +320,7 @@
   align-items: center;
   gap: 0.55rem;
   padding: 0.72rem 1.15rem;
-  border-top: 1px solid color-mix(in srgb, var(--sl-color-white) 8%, transparent);
+  border-top: 1px solid var(--caddy-border-subtle);
   background: color-mix(in srgb, var(--sl-color-gray-7) 62%, transparent);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif;
   font-size: 0.735rem;
@@ -364,7 +379,7 @@
 .site-title img {
   height: 1.9rem;
   width: auto;
-  border-radius: 7px;
+  border-radius: var(--caddy-radius-sm);
 }
 
 /* ============================================================
@@ -391,7 +406,7 @@
 
 /* 导航链接：交互反馈 */
 .sidebar a {
-  border-radius: 0.45rem;
+  border-radius: var(--caddy-radius-sm);
   transition: background 120ms ease, color 120ms ease;
 }
 
@@ -469,7 +484,7 @@
 
 .sl-markdown-content table {
   width: 100%;
-  border-radius: 0.75rem;
+  border-radius: var(--caddy-radius-md);
   overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--sl-color-white) 11%, transparent);
   font-size: 0.925rem;
@@ -492,17 +507,17 @@
 
 .sl-markdown-content .expressive-code pre {
   border: 1px solid color-mix(in srgb, var(--sl-color-white) 11%, transparent);
-  border-radius: 0.85rem;
+  border-radius: var(--caddy-radius-md);
   background: color-mix(in srgb, var(--sl-color-black) 88%, var(--caddy-blue)) !important;
   box-shadow:
-    0 18px 38px -26px rgba(0, 0, 0, 0.85),
-    0 0 0 1px color-mix(in srgb, var(--sl-color-white) 3%, transparent) inset;
+    var(--caddy-shadow-rest),
+    0 0 0 1px var(--caddy-border-subtle) inset;
 }
 
 /* 行内代码 */
 .sl-markdown-content :not(pre) > code {
-  border: 1px solid color-mix(in srgb, var(--caddy-blue) 28%, transparent);
-  border-radius: 0.38rem;
+  border: 1px solid var(--caddy-border-accent);
+  border-radius: var(--caddy-radius-xs);
   padding: 0.12em 0.44em;
   font-size: 0.865em;
   font-weight: 550;
@@ -513,9 +528,9 @@
 /* ---------------- 提示框 ---------------- */
 
 .starlight-aside {
-  border-radius: var(--caddy-radius);
+  border-radius: var(--caddy-radius-md);
   border-inline-start-width: 4px;
-  padding: 1.1rem 1.3rem;
+  padding: 1.25rem;
 }
 
 .starlight-aside__title {
@@ -535,12 +550,12 @@
 
 .card {
   position: relative;
-  border: 1px solid color-mix(in srgb, var(--sl-color-white) 11%, transparent);
-  border-radius: 0.95rem;
+  border: 1px solid var(--caddy-border);
+  border-radius: var(--caddy-radius-md);
   background: linear-gradient(170deg,
     color-mix(in srgb, var(--sl-color-gray-6) 82%, transparent) 0%,
     color-mix(in srgb, var(--sl-color-gray-7) 92%, transparent) 100%);
-  padding: 1.55rem 1.35rem 1.45rem;
+  padding: 1.5rem 1.25rem;
   overflow: hidden;
   transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
 }
@@ -560,9 +575,7 @@
 .card:hover {
   transform: translateY(-3px);
   border-color: color-mix(in srgb, var(--caddy-blue) 52%, transparent);
-  box-shadow:
-    0 18px 38px -22px rgba(74, 140, 255, 0.85),
-    0 0 0 1px color-mix(in srgb, var(--caddy-blue) 18%, transparent) inset;
+  box-shadow: var(--caddy-shadow-hover);
 }
 
 .card:hover::before {
@@ -583,10 +596,9 @@
   height: 1.72rem;
   padding: 0.32rem;
   box-sizing: content-box;
-  border-radius: 0.68rem;
+  border-radius: var(--caddy-radius-sm);
   color: var(--sl-color-white);
   background: var(--caddy-gradient);
-  box-shadow: 0 6px 14px -7px color-mix(in srgb, var(--caddy-blue) 92%, transparent);
 }
 
 .card .body {
@@ -604,19 +616,19 @@
 
 /* LinkCard */
 .sl-link-card {
-  border: 1px solid color-mix(in srgb, var(--sl-color-white) 11%, transparent);
-  border-radius: 0.95rem;
+  border: 1px solid var(--caddy-border);
+  border-radius: var(--caddy-radius-md);
   background: linear-gradient(170deg,
     color-mix(in srgb, var(--sl-color-gray-6) 82%, transparent) 0%,
     color-mix(in srgb, var(--sl-color-gray-7) 92%, transparent) 100%);
-  padding: 1.25rem 1.3rem;
+  padding: 1.25rem;
   transition: transform 170ms ease, border-color 170ms ease, box-shadow 170ms ease;
 }
 
 .sl-link-card:hover {
   transform: translateY(-2px);
   border-color: color-mix(in srgb, var(--caddy-blue) 52%, transparent);
-  box-shadow: 0 14px 32px -22px rgba(74, 140, 255, 0.85);
+  box-shadow: var(--caddy-shadow-hover);
 }
 
 .sl-link-card .title {
@@ -667,10 +679,10 @@
 }
 
 .pagination-links a {
-  border: 1px solid var(--sl-color-hairline);
-  border-radius: var(--caddy-radius);
+  border: 1px solid var(--caddy-border);
+  border-radius: var(--caddy-radius-md);
   background: color-mix(in srgb, var(--sl-color-gray-6) 70%, transparent);
-  padding: 0.9rem 1.1rem;
+  padding: 1rem 1.25rem;
   transition: transform 150ms ease, border-color 150ms ease;
 }
 
@@ -736,4 +748,87 @@
   .sl-link-button:hover {
     transform: none;
   }
+}
+
+/* ============================================================
+   主流方案对比卡
+   ============================================================ */
+
+.cmp { overflow-x: auto; }
+.cmp-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--caddy-border);
+  border-radius: var(--caddy-radius-md);
+  overflow: hidden;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+.cmp-table th, .cmp-table td {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--caddy-border-subtle);
+  text-align: left;
+  vertical-align: top;
+}
+.cmp-table thead th {
+  border-bottom: 1px solid var(--caddy-border);
+}
+.cmp-table tbody tr:last-child th,
+.cmp-table tbody tr:last-child td { border-bottom: none; }
+.cmp-name {
+  display: block;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--sl-color-white);
+}
+.cmp-tag {
+  display: inline-block;
+  margin-top: 0.4rem;
+  font-size: 0.72rem;
+  color: var(--sl-color-gray-3);
+  border: 1px solid var(--caddy-border-subtle);
+  border-radius: var(--caddy-radius-pill);
+  padding: 0.12rem 0.55rem;
+}
+/* 维度列 */
+.cmp-table th[scope="row"] {
+  color: var(--sl-color-gray-3);
+  font-weight: 600;
+  font-size: 0.78rem;
+  white-space: nowrap;
+  background: color-mix(in srgb, var(--sl-color-gray-6) 45%, transparent);
+  border-right: 1px solid var(--caddy-border-subtle);
+}
+/* Caddy 列主角强调 */
+.cmp-table .cmp-caddy {
+  background: color-mix(in srgb, var(--caddy-blue) 6%, transparent);
+  box-shadow: inset 3px 0 0 0 var(--caddy-blue);
+}
+.cmp-hero-badge {
+  display: inline-block;
+  margin-inline-start: 0.4rem;
+  font-size: 0.68rem;
+  color: var(--caddy-green);
+  border: 1px solid color-mix(in srgb, var(--caddy-green) 35%, transparent);
+  border-radius: var(--caddy-radius-pill);
+  padding: 0.1rem 0.5rem;
+}
+/* 行 hover 同步高亮（无位移无阴影） */
+.cmp-table tbody tr:hover th,
+.cmp-table tbody tr:hover td {
+  background: color-mix(in srgb, var(--caddy-blue) 9%, transparent);
+}
+/* 结论行（tfoot）视觉收口 */
+.cmp-table tfoot th, .cmp-table tfoot td {
+  background: color-mix(in srgb, var(--sl-color-white) 4%, transparent);
+  border-top: 1px solid var(--caddy-border);
+  border-bottom: none;
+  font-size: 0.82rem;
+}
+.cmp-table tfoot th { color: var(--sl-color-white); font-weight: 700; }
+/* 移动端：横向滚动保留（表格对比，不做卡片堆叠） */
+@media (max-width: 50rem) {
+  .cmp-table { font-size: 0.82rem; }
+  .cmp-table th, .cmp-table td { padding: 0.7rem 0.75rem; }
 }

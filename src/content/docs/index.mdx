@@ -74,15 +74,72 @@ Caddy 不是 Nginx 的换皮，它的目标是**用最少的配置表达最多�
 - **内网工具** —— 给 NAS、Jupyter、Home Assistant 套一层带证书的 HTTPS。
 - **需要 WebSocket / gRPC / HTTP/3** —— 都是默认能力，不用单独编译。
 
-## 和 Nginx 的区别
+## 主流方案对比
 
-| | Caddy | Nginx |
-| --- | --- | --- |
-| HTTPS 证书 | 自动签发与续期 | 需 certbot + cron |
-| 配置文件 | Caddyfile（易读 DSL） | nginx.conf（指令式，易错） |
-| 改完配置生效 | `caddy reload`，几乎无感 | 通常要 reload |
-| 依赖 | 单个静态二进制 | 动态库 + 脚本生态 |
-| HTTP/3 | 默认开启 | 需编译时开启 |
+<div class="cmp">
+<table class="cmp-table">
+  <caption class="sr-only">主流反向代理方案对比</caption>
+  <thead>
+    <tr>
+      <th scope="col" class="cmp-dim">维度</th>
+      <th scope="col" class="cmp-col cmp-caddy">
+        <span class="cmp-name">Caddy</span>
+        <span class="cmp-tag">现代省心</span>
+        <span class="cmp-hero-badge">本文主角</span>
+      </th>
+      <th scope="col"><span class="cmp-name">Nginx</span><span class="cmp-tag">经典全能</span></th>
+      <th scope="col"><span class="cmp-name">HAProxy</span><span class="cmp-tag">四层王者</span></th>
+      <th scope="col"><span class="cmp-name">Traefik</span><span class="cmp-tag">K8s 原生</span></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">自动 HTTPS</th>
+      <td class="cmp-caddy">内置，自动签发续期</td>
+      <td>需 certbot + cron</td>
+      <td>需外部证书工具</td>
+      <td>内置，Let's Encrypt 自动</td>
+    </tr>
+    <tr>
+      <th scope="row">配置模型</th>
+      <td class="cmp-caddy">Caddyfile，声明式易读</td>
+      <td>nginx.conf，指令式</td>
+      <td>haproxy.cfg，指令式</td>
+      <td>标签 / 动态配置</td>
+    </tr>
+    <tr>
+      <th scope="row">负载均衡与服务发现</th>
+      <td class="cmp-caddy">内置，动态上游</td>
+      <td>upstream 模块</td>
+      <td>L4 + L7 顶尖，热重载</td>
+      <td>K8s / Docker 原生发现</td>
+    </tr>
+    <tr>
+      <th scope="row">性能与并发定位</th>
+      <td class="cmp-caddy">中小规模够用，Go 生态</td>
+      <td>事件驱动，高并发成熟</td>
+      <td>极致并发，L4 天花板</td>
+      <td>云原生场景够用</td>
+    </tr>
+    <tr>
+      <th scope="row">变更生效</th>
+      <td class="cmp-caddy">reload 几乎无感</td>
+      <td>reload 平滑</td>
+      <td>热重载零中断</td>
+      <td>配置变更即时生效</td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <th scope="row">适用场景</th>
+      <td class="cmp-caddy">个人站 / API 网关首选</td>
+      <td>经典通用，生态最大</td>
+      <td>高并发 L4/L7 负载</td>
+      <td>云原生 / K8s 首选</td>
+    </tr>
+  </tfoot>
+</table>
+</div>
 
 <CardGrid>
   <LinkCard
