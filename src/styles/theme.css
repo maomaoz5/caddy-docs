@@ -68,10 +68,24 @@
   border-bottom: 1px solid var(--sl-color-hairline);
   /* 官方默认是 clamp(2.5rem, 1rem + 10vmin, 10rem)，大屏能顶到 160px，
      留白过大到显得空洞。收紧一档。 */
-  padding-block: clamp(3rem, 7vh, 5.5rem);
+  padding-block: clamp(2.75rem, 6vh, 4.75rem);
   background:
     radial-gradient(760px 340px at 12% -20%, rgba(74, 140, 255, 0.22), transparent 65%),
     radial-gradient(700px 320px at 88% -30%, rgba(34, 211, 167, 0.18), transparent 65%);
+  overflow: hidden;
+}
+
+/* 细网格纹理，增加层次感 */
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--sl-color-white) 4%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--sl-color-white) 4%, transparent) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, #000 20%, transparent 75%);
+  pointer-events: none;
 }
 
 /* 顶部一条品牌渐变细线 */
@@ -82,12 +96,14 @@
   top: 0;
   height: 3px;
   background: var(--caddy-gradient);
+  z-index: 1;
 }
 
 /* 主标题：渐变文字 */
 .hero h1 {
   font-weight: 800;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
   background: var(--caddy-gradient);
   -webkit-background-clip: text;
   background-clip: text;
@@ -98,15 +114,35 @@
 /* 副标题 */
 .hero .tagline {
   color: var(--sl-color-gray-2);
-  font-size: clamp(1rem, 0.6vw + 0.9rem, 1.2rem);
-  line-height: 1.6;
-  max-width: 46ch;
+  font-size: clamp(1.02rem, 0.55vw + 0.92rem, 1.22rem);
+  line-height: 1.65;
+  max-width: 42ch;
 }
 
 /* Hero 按钮 */
 .hero .actions {
   gap: 0.75rem;
   flex-wrap: wrap;
+}
+
+/* Hero 左右分栏：文字在左，代码窗口在右 */
+.hero > .hero-html {
+  order: 2;
+  width: 100%;
+  min-width: 0;
+}
+
+.hero > .stack {
+  order: 1;
+  min-width: 0;
+}
+
+/* 大屏下加宽代码窗口，比例 55 / 45 */
+@media (min-width: 50rem) {
+  .hero {
+    grid-template-columns: 1.18fr 1fr;
+    column-gap: 3.25rem;
+  }
 }
 
 .sl-link-button {
@@ -138,6 +174,176 @@
 .sl-link-button.minimal:hover {
   border-color: var(--caddy-blue);
   color: var(--sl-color-white);
+}
+
+/* ============================================================
+   Hero 代码窗口
+   ============================================================ */
+
+.cw {
+  position: relative;
+  width: 100%;
+  border: 1px solid color-mix(in srgb, var(--sl-color-white) 12%, transparent);
+  border-radius: 14px;
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--sl-color-black) 92%, var(--caddy-blue)) 0%,
+    var(--sl-color-black) 42%);
+  box-shadow:
+    0 40px 80px -32px rgba(0, 0, 0, 0.72),
+    0 0 0 1px color-mix(in srgb, var(--sl-color-white) 4%, transparent) inset,
+    0 32px 72px -40px color-mix(in srgb, var(--caddy-blue) 60%, transparent);
+  overflow: hidden;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.845rem;
+  line-height: 1.85;
+}
+
+/* 窗口栏 */
+.cw-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.72rem 1rem;
+  background: color-mix(in srgb, var(--sl-color-gray-7) 72%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--sl-color-white) 8%, transparent);
+}
+
+.cw-dots {
+  display: inline-flex;
+  gap: 0.42rem;
+  flex: none;
+}
+
+.cw-dots i {
+  width: 0.62rem;
+  height: 0.62rem;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--sl-color-gray-4) 85%, transparent);
+}
+
+.cw-dots i:nth-child(1) { background: #ff5f57; }
+.cw-dots i:nth-child(2) { background: #febc2e; }
+.cw-dots i:nth-child(3) { background: #28c840; }
+
+.cw-file {
+  flex: 1;
+  text-align: center;
+  font-size: 0.72rem;
+  letter-spacing: 0.03em;
+  color: var(--sl-color-gray-3);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif;
+}
+
+.cw-badge {
+  flex: none;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif;
+  font-size: 0.665rem;
+  font-weight: 600;
+  letter-spacing: 0.035em;
+  padding: 0.22rem 0.58rem;
+  border-radius: 999px;
+  color: var(--caddy-green);
+  background: color-mix(in srgb, var(--caddy-green) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--caddy-green) 32%, transparent);
+}
+
+/* 代码区 */
+.cw-code {
+  padding: 1.05rem 1.25rem 1.15rem;
+  counter-reset: cw-line;
+  overflow-x: auto;
+}
+
+.cw-code .l {
+  counter-increment: cw-line;
+  white-space: pre;
+  position: relative;
+  padding-inline-start: 2.35rem;
+}
+
+/* 行号 */
+.cw-code .l::before {
+  content: counter(cw-line);
+  position: absolute;
+  inset-inline-start: 0;
+  width: 1.6rem;
+  text-align: right;
+  color: color-mix(in srgb, var(--sl-color-gray-4) 62%, transparent);
+  font-size: 0.765rem;
+  user-select: none;
+}
+
+.cw-code .cw-blank::before {
+  content: '';
+}
+
+.c-cm {
+  color: color-mix(in srgb, var(--sl-color-gray-3) 78%, transparent);
+  font-style: italic;
+}
+
+.c-host {
+  color: var(--caddy-blue);
+  font-weight: 650;
+}
+
+.c-dir {
+  color: var(--caddy-green);
+}
+
+.c-val {
+  color: color-mix(in srgb, var(--sl-color-gray-1) 82%, transparent);
+}
+
+.c-punc {
+  color: var(--sl-color-gray-4);
+}
+
+/* 状态栏 */
+.cw-foot {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.72rem 1.15rem;
+  border-top: 1px solid color-mix(in srgb, var(--sl-color-white) 8%, transparent);
+  background: color-mix(in srgb, var(--sl-color-gray-7) 62%, transparent);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif;
+  font-size: 0.735rem;
+  color: var(--sl-color-gray-3);
+  letter-spacing: 0.015em;
+}
+
+.cw-dot-live {
+  width: 0.52rem;
+  height: 0.52rem;
+  border-radius: 50%;
+  background: var(--caddy-green);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--caddy-green) 22%, transparent);
+  flex: none;
+  animation: cw-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes cw-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cw-dot-live { animation: none; }
+}
+
+/* 移动端：代码窗口收缩 */
+@media (max-width: 50rem) {
+  .cw {
+    font-size: 0.755rem;
+  }
+  .cw-code {
+    padding: 0.85rem 0.95rem 0.95rem;
+  }
+  .cw-code .l {
+    padding-inline-start: 1.95rem;
+  }
+  .cw-file { display: none; }
 }
 
 /* ============================================================
@@ -226,8 +432,27 @@
 }
 
 .sl-markdown-content h2 {
-  padding-bottom: 0.35em;
+  position: relative;
+  padding-bottom: 0.42em;
+  padding-inline-start: 0.85em;
   border-bottom: 1px solid var(--sl-color-hairline);
+  font-size: 1.42rem;
+}
+
+/* h2 左侧渐变标记条 */
+.sl-markdown-content h2::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: 0;
+  top: 0.18em;
+  bottom: 0.62em;
+  width: 3px;
+  border-radius: 999px;
+  background: var(--caddy-gradient);
+}
+
+.sl-markdown-content h3 {
+  font-size: 1.15rem;
 }
 
 /* 链接 */
@@ -243,10 +468,11 @@
 /* ---------------- 表格 ---------------- */
 
 .sl-markdown-content table {
-  border-radius: 0.7rem;
+  width: 100%;
+  border-radius: 0.75rem;
   overflow: hidden;
-  border: 1px solid var(--sl-color-hairline);
-  font-size: 0.92rem;
+  border: 1px solid color-mix(in srgb, var(--sl-color-white) 11%, transparent);
+  font-size: 0.925rem;
 }
 
 .sl-markdown-content thead {
@@ -265,19 +491,23 @@
 /* ---------------- 代码块 ---------------- */
 
 .sl-markdown-content .expressive-code pre {
-  border: 1px solid var(--sl-color-hairline);
-  border-radius: var(--caddy-radius);
-  box-shadow: 0 10px 30px -22px rgba(0, 0, 0, 0.9);
+  border: 1px solid color-mix(in srgb, var(--sl-color-white) 11%, transparent);
+  border-radius: 0.85rem;
+  background: color-mix(in srgb, var(--sl-color-black) 88%, var(--caddy-blue)) !important;
+  box-shadow:
+    0 18px 38px -26px rgba(0, 0, 0, 0.85),
+    0 0 0 1px color-mix(in srgb, var(--sl-color-white) 3%, transparent) inset;
 }
 
 /* 行内代码 */
 .sl-markdown-content :not(pre) > code {
-  border: 1px solid var(--sl-color-hairline);
-  border-radius: 0.35rem;
-  padding: 0.1em 0.4em;
-  font-size: 0.88em;
+  border: 1px solid color-mix(in srgb, var(--caddy-blue) 28%, transparent);
+  border-radius: 0.38rem;
+  padding: 0.12em 0.44em;
+  font-size: 0.865em;
+  font-weight: 550;
   background: color-mix(in srgb, var(--caddy-blue) 13%, transparent);
-  color: var(--sl-color-gray-1);
+  color: color-mix(in srgb, var(--caddy-blue) 72%, var(--sl-color-white));
 }
 
 /* ---------------- 提示框 ---------------- */
@@ -300,68 +530,110 @@
 /* 首页特性卡片网格：自适应三列 */
 .sl-markdown-content .card-grid {
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  gap: 1.15rem;
 }
 
 .card {
-  border: 1px solid var(--sl-color-hairline);
-  border-radius: var(--caddy-radius);
-  background: color-mix(in srgb, var(--sl-color-gray-6) 70%, transparent);
-  padding: 1.4rem 1.3rem;
-  transition: transform 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
+  position: relative;
+  border: 1px solid color-mix(in srgb, var(--sl-color-white) 11%, transparent);
+  border-radius: 0.95rem;
+  background: linear-gradient(170deg,
+    color-mix(in srgb, var(--sl-color-gray-6) 82%, transparent) 0%,
+    color-mix(in srgb, var(--sl-color-gray-7) 92%, transparent) 100%);
+  padding: 1.55rem 1.35rem 1.45rem;
+  overflow: hidden;
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+/* 顶部品牌渐变细条 */
+.card::before {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 2px;
+  background: var(--caddy-gradient);
+  opacity: 0;
+  transition: opacity 180ms ease;
 }
 
 .card:hover {
   transform: translateY(-3px);
-  border-color: color-mix(in srgb, var(--caddy-blue) 55%, transparent);
-  box-shadow: 0 16px 36px -22px rgba(74, 140, 255, 0.95);
+  border-color: color-mix(in srgb, var(--caddy-blue) 52%, transparent);
+  box-shadow:
+    0 18px 38px -22px rgba(74, 140, 255, 0.85),
+    0 0 0 1px color-mix(in srgb, var(--caddy-blue) 18%, transparent) inset;
+}
+
+.card:hover::before {
+  opacity: 1;
 }
 
 .card .title {
+  font-size: 1.02rem;
   font-weight: 700;
+  letter-spacing: -0.012em;
   color: var(--sl-color-white);
-  gap: 0.55rem;
+  gap: 0.62rem;
 }
 
-/* 卡片图标：品牌色胶囊 */
+/* 卡片图标：渐变底色胶囊 */
 .card .icon {
-  background: color-mix(in srgb, var(--caddy-blue) 18%, transparent);
-  color: var(--caddy-blue);
-  border-radius: 0.6rem;
-  padding: 0.35rem;
+  width: 1.72rem;
+  height: 1.72rem;
+  padding: 0.32rem;
   box-sizing: content-box;
+  border-radius: 0.68rem;
+  color: var(--sl-color-white);
+  background: var(--caddy-gradient);
+  box-shadow: 0 6px 14px -7px color-mix(in srgb, var(--caddy-blue) 92%, transparent);
 }
 
 .card .body {
+  margin-top: 0.35rem;
   color: var(--sl-color-gray-2);
+  font-size: 0.925rem;
+  line-height: 1.72;
 }
 
 .card .body code {
-  background: color-mix(in srgb, var(--caddy-green) 15%, transparent);
-  border-color: transparent;
+  background: color-mix(in srgb, var(--caddy-green) 14%, transparent);
+  border-color: color-mix(in srgb, var(--caddy-green) 26%, transparent);
+  color: color-mix(in srgb, var(--caddy-green) 82%, var(--sl-color-white));
 }
 
 /* LinkCard */
 .sl-link-card {
-  border: 1px solid var(--sl-color-hairline);
-  border-radius: var(--caddy-radius);
-  background: color-mix(in srgb, var(--sl-color-gray-6) 70%, transparent);
-  padding: 1.1rem 1.2rem;
-  transition: transform 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
+  border: 1px solid color-mix(in srgb, var(--sl-color-white) 11%, transparent);
+  border-radius: 0.95rem;
+  background: linear-gradient(170deg,
+    color-mix(in srgb, var(--sl-color-gray-6) 82%, transparent) 0%,
+    color-mix(in srgb, var(--sl-color-gray-7) 92%, transparent) 100%);
+  padding: 1.25rem 1.3rem;
+  transition: transform 170ms ease, border-color 170ms ease, box-shadow 170ms ease;
 }
 
 .sl-link-card:hover {
   transform: translateY(-2px);
-  border-color: color-mix(in srgb, var(--caddy-blue) 55%, transparent);
-  box-shadow: 0 14px 32px -22px rgba(34, 211, 167, 0.9);
+  border-color: color-mix(in srgb, var(--caddy-blue) 52%, transparent);
+  box-shadow: 0 14px 32px -22px rgba(74, 140, 255, 0.85);
 }
 
 .sl-link-card .title {
   font-weight: 700;
+  letter-spacing: -0.012em;
   color: var(--sl-color-white);
 }
 
 .sl-link-card .description {
   color: var(--sl-color-gray-3);
+  font-size: 0.925rem;
+  line-height: 1.68;
+}
+
+/* LinkCard 的箭头图标 */
+.sl-link-card :global(.icon) {
+  color: var(--caddy-blue);
 }
 
 /* ============================================================
