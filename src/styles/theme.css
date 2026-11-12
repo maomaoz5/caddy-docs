@@ -757,6 +757,7 @@
 .cmp { overflow-x: auto; }
 .cmp-table {
   width: 100%;
+  table-layout: fixed;
   border-collapse: separate;
   border-spacing: 0;
   border: 1px solid var(--caddy-border);
@@ -765,11 +766,14 @@
   font-size: 0.9rem;
   line-height: 1.6;
 }
+.cmp-table th:first-child { width: 15%; }
+.cmp-table th:not(:first-child) { width: 21.25%; }
 .cmp-table th, .cmp-table td {
   padding: 0.85rem 1rem;
   border-bottom: 1px solid var(--caddy-border-subtle);
   text-align: left;
   vertical-align: top;
+  color: var(--sl-color-gray-1);
 }
 .cmp-table thead th {
   border-bottom: 1px solid var(--caddy-border);
@@ -793,9 +797,9 @@
 }
 /* 维度列 */
 .cmp-table th[scope="row"] {
-  color: var(--sl-color-gray-3);
+  color: var(--sl-color-gray-2);
   font-weight: 600;
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   white-space: nowrap;
   background: color-mix(in srgb, var(--sl-color-gray-6) 45%, transparent);
   border-right: 1px solid var(--caddy-border-subtle);
